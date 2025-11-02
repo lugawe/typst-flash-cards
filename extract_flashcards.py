@@ -171,9 +171,15 @@ def main() -> None:
 
     # Determine output path
     if args.output:
-        output = args.output
+        if args.export == "anki":
+            output = args.output if args.output.endswith(".apkg") else f"{args.output}.apkg"
+        else:
+            output = str(Path(args.output).parent)
     else:
-        output = Path(args.pdf_file).stem + (".apkg" if args.export == "anki" else "")
+        if args.export == "anki":
+            output = f"output/{Path(args.pdf_file).stem}.apkg"
+        else:
+            output = "output"
 
     try:
         with FlashCardExtractor(args.pdf_file) as ex:
