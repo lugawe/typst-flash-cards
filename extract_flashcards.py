@@ -70,7 +70,7 @@ class FlashCardExtractor:
             (out / f"{num:03d}-Back.pdf").write_bytes(self._extract_pdf(a_page, 1 - col, row))
             print(f"  Card {num:03d}")
 
-        print(f"✓ Exported to {out}")
+        print(f"Exported to {out}")
 
     def export_pdf_merged(self, output_dir: str) -> None:
         """Export cards as merged front+back PDFs."""
@@ -92,7 +92,7 @@ class FlashCardExtractor:
             merged.close()
             print(f"  Card {num:03d}")
 
-        print(f"✓ Exported to {out}")
+        print(f"Exported to {out}")
 
     def export_anki(self, output_file: str, deck_name: str = "Imported Flashcards") -> None:
         """Export cards to Anki (.apkg) format."""
@@ -104,11 +104,13 @@ class FlashCardExtractor:
             random.randrange(1 << 30, 1 << 31),
             "Image Flashcard",
             fields=[{"name": "Q"}, {"name": "A"}],
-            templates=[{
-                "name": "Card",
-                "qfmt": '<div style="text-align:center">{{Q}}</div>',
-                "afmt": '{{FrontSide}}<hr id="answer"><div style="text-align:center">{{A}}</div>',
-            }],
+            templates=[
+                {
+                    "name": "Card",
+                    "qfmt": '<div style="text-align:center">{{Q}}</div>',
+                    "afmt": '{{FrontSide}}<hr id="answer"><div style="text-align:center">{{A}}</div>',
+                }
+            ],
             css=".card{text-align:center;background:#fff}img{max-width:100%;height:auto}",
         )
 
@@ -128,10 +130,12 @@ class FlashCardExtractor:
                 a_path.write_bytes(self._extract_image(a_page, 1 - col, row))
                 media.append(str(a_path))
 
-                deck.add_note(genanki.Note(
-                    model=model,
-                    fields=[f'<img src="{q_file}">', f'<img src="{a_file}">'],
-                ))
+                deck.add_note(
+                    genanki.Note(
+                        model=model,
+                        fields=[f'<img src="{q_file}">', f'<img src="{a_file}">'],
+                    )
+                )
                 print(f"  Card {num:03d}")
 
             pkg = genanki.Package(deck)
@@ -141,7 +145,7 @@ class FlashCardExtractor:
         finally:
             shutil.rmtree(temp_dir, ignore_errors=True)
 
-        print(f"✓ Exported to {out}")
+        print(f"Exported to {out}")
 
     def close(self) -> None:
         self.pdf_doc.close()
@@ -183,6 +187,7 @@ def main() -> None:
         sys.exit(f"Error: {e}")
     except Exception as e:
         import traceback
+
         traceback.print_exc()
         sys.exit(f"Error: {e}")
 
